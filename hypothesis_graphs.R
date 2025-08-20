@@ -13,7 +13,6 @@ library(ggplot2)
 library(patchwork) # For combining plots
 library(ComplexHeatmap) # For CellChat heatmap
 library(CellChat)
-setwd("~/Desktop/raw_data_S100A4/")
 
 seurat_Eqc <- readRDS(file = "seurat_annotated_cluster.rds")
 
@@ -140,7 +139,7 @@ groupSize <- as.numeric(table(cellchat@idents))
 
 df.net <- subsetCommunication(cellchat)
 
-# Or, visualize the significance in a heatmap (This is what you NEED for your poster)
+# visualize the significance in a heatmap (This is what you NEED for your poster)
 print(
   netVisual_heatmap(cellchat,
                     measure = "count",
@@ -151,3 +150,22 @@ print(
 
 vertex.receiver = seq(1,4)
 netVisual_aggregate(cellchat, signaling = "MIF",  vertex.receiver = vertex.receiver, layout = "hierarchy")
+
+######
+# DotPlot of the S100 family 
+
+
+# Define a vector of S100 genes you're interested in
+s100_genes <- c("S100A1", "S100A2", "S100A4", "S100A6", "S100A8", "S100A9", "S100A10", "S100A11", "S100A16", "S100B")
+
+# Filter to only include genes that are actually present in your dataset
+s100_genes_present <- s100_genes[s100_genes %in% rownames(seurat_Eqc)]
+
+# Create a dot plot to compare the avg. expression for SA100 genes family
+DotPlot(seurat_Eqc, 
+        features = s100_genes_present, 
+        group.by = "annotated_clusters", 
+        cols = c("lightgrey", "blue"), # Colors for low and high expression
+        dot.scale = 6, # Scale the size of the dots
+        cluster.idents = FALSE) + # Don't cluster identities; keep original order
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotate x-axis labels
