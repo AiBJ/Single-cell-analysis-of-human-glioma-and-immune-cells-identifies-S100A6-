@@ -169,3 +169,12 @@ DotPlot(seurat_Eqc,
         dot.scale = 6, # Scale the size of the dots
         cluster.idents = FALSE) + # Don't cluster identities; keep original order
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotate x-axis labels
+
+################################
+# Systems analysis of cell-cell communication network
+
+cellchat <- netAnalysis_computeCentrality(cellchat, slot.name = "netP") # the slot 'netP' means the inferred intercellular communication network of signaling pathways
+# Signaling role analysis on the aggregated cell-cell communication network from all signaling pathways
+gg1 <- netAnalysis_signalingRole_scatter(cellchat)
+gg1
+
